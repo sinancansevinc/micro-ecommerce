@@ -9,6 +9,7 @@ class Product(models.Model):
                              default=1, on_delete=models.CASCADE)
     # stripe_product_id =
     name = models.CharField(max_length=120)
+    image = models.ImageField(upload_to="products/", blank=True, null=True)
     handle = models.SlugField(unique=True)  # slug
     price = models.DecimalField(max_digits=10, decimal_places=2, default=9.99)
     og_price = models.DecimalField(
@@ -28,6 +29,9 @@ class Product(models.Model):
             self.stripe_price = int(self.price * 100)
             self.price_changed_timestamp = timezone.now()
         super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return f"/products/{self.handle}"
 
     def __str__(self):
         return self.name
